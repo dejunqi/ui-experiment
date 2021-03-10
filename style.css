@@ -1,0 +1,26 @@
+.container {
+    width: 1190px;
+    min-width: 900px;
+}
+
+.tileContainer {
+    display: flex;
+    width: 100%;
+}
+
+.tile {
+    width: 177px;
+    height: 177px;
+    background-color: aqua;
+    margin-right: 25px;
+}
+
+.tileImage {
+    width: 100%;
+}
+
+.arrow {
+    width: 20px;
+    background-color: aquamarine;
+    visibility: hidden;
+}

@@ -14,21 +14,11 @@ for (let i = 0; i < circles.length; i++) {
         circles[i].addEventListener("mouseenter", overCircle);
 }
 
-// timer=setInterval(nextMove,2000);
-
 box.addEventListener("mouseover",function() {
-    // clearInterval(timer);
     arrowLeft.style.display="block";
     arrowRight.style.display="block";
 });
-// box.addEventListener("mouseout",function() {
-//     timer=setInterval(nextMove,2000);
-//     arrowLeft.style.display="none";
-//     arrowRight.style.display="none";
-// });
 changeCircleColor(preIndex, currentIndex);
-
-
 
 function overCircle() {
     preIndex = currentIndex;
