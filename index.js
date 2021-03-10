@@ -4,6 +4,6 @@
     console.log(w) // window object
 
     const tile = document.querySelector('.title');
-    tile.addEventListener('')
+    // tile.addEventListener('')
 
 })(window)

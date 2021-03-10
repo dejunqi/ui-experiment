@@ -24,3 +24,13 @@
     background-color: aquamarine;
     visibility: hidden;
 }
+
+@media (max-width: 970px) {
+    .tile {
+        visibility: hidden;
+    }
+
+    .tile:nth-child(-n+4) {
+        visibility: unset !important;
+    }
+}
