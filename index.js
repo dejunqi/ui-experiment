@@ -2,15 +2,10 @@
 
 (function(w) {
 
-
-
     const tiles = document.querySelectorAll('.tile');
-    const container = document.querySelector(".container");
     const tileContainer = document.querySelector(".tileContainer");
-    // tile.addEventListener('')
     const leftBtn = document.querySelector(".arrowLeft");
     const rightBtn = document.querySelector(".arrowRight");
-    const singleTileWidth = tiles[0].offsetWidth + 25;
     const numOfTiles = tiles.length;
     let numOfOverFlow = 0;
 
@@ -18,78 +13,43 @@
         return document.querySelector(selector).offsetWidth + extra;
     }
 
-    function onResize() {
+    const tileWidth = getWidth('.tile', 25);
 
-        const tileContainerWidth = getWidth('.tileContainer');
-        const tileWidth = getWidth('.tile', 25);
-        const overFlow = tileContainerWidth / tileWidth;
-        // console.log(overFlow)
-
-        if (overFlow <= 4.5) {
-            numOfOverFlow = numOfTiles - Math.floor(overFlow);
-            console.log('num of overflow: ', numOfOverFlow);
-            for (let i = 4; i < tiles.length; i++) {
-                tiles[i].style.visibility = "hidden"
-            }
-        } else {
-            for (let i = 4; i < tiles.length; i++) {
-                tiles[i].style.visibility = "unset"
-            }
+    function setVisibility(value) {
+        for (let i = tiles.length - 1; i >= tiles.length - numOfOverFlow ; i--) {
+            tiles[i].style.visibility = value;
         }
     }
 
-    const observer = new ResizeObserver(onResize)
-        .observe(tileContainer);
+    function onResize() {
+        const tileContainerWidth = getWidth('.tileContainer');
+        const overFlow = tileContainerWidth / tileWidth;
+        if (overFlow <= 4.7) {
+            numOfOverFlow = numOfTiles - Math.floor(overFlow);
+            setVisibility('hidden');
 
-
-
-
-
-    container.addEventListener('mouseover', (evnt) => {
-        // console.log(evnt)
-        // console.log("viewport width ", w.innerWidth);
-        if (w.innerWidth >= 950) {
-            return;
+        } else {
+            setVisibility("unset");
+            if (!!tileContainer.style.left && parseInt(tileContainer.style.left) < 0) {
+                tileContainer.style.left = "0px";
+            }
+            numOfOverFlow = 0;
         }
+    }
 
-
-        if (tileContainer.offsetLeft < 0) {
-            // leftBtn.style.visibility = "unset";
-            // rightBtn.style.visibility = "hidden";
-        }
-
-        // console.log('width: ', tileContainer.offsetWidth);
-
-        if (tileContainer.offsetLeft === 0 && tileContainer.offsetWidth < 940) {
-            // rightBtn.style.visibility = "unset";
-        }
-    });
-
-    container.addEventListener('mouseout', () => {
-        // rightBtn.style.visibility = "hidden";
-        // leftBtn.style.visibility = "hidden";
-    })
+    w.addEventListener('resize', onResize);
+    w.addEventListener('load', onResize);
 
     leftBtn.addEventListener('click', () => {
-        // tileContainer.style.offsetLeft = "-100px";
-        var dis = getWidth(tiles[0], 25);
         tileContainer.style.left = `0px`;
-        // tiles.forEach(e => e.style.display = "unset");
-        rightBtn.style.visibility = "unset";
-        leftBtn.style.visibility = "hidden";
+        setVisibility("hidden");
     });
 
     rightBtn.addEventListener('click', () => {
-        var dis = getWidth(tiles[0], 25);
+        var dis = numOfOverFlow * tileWidth;
         tileContainer.style.left = `-${dis}px`;
         tileContainer.style.right = "auto";
-        // tileContainer.style.right = "100px";
-        // tiles.forEach(e => e.style.display = "unset");
-        // tiles.forEach(e => e.removeAttribute('style'))
-        rightBtn.style.visibility = "hidden";
-        leftBtn.style.visibility = "unset";
+        setVisibility("unset");
     });
-
-
 
 })(window)
