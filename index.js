@@ -1,6 +1,6 @@
 
 
-(function(w) {
+const run = (w) => {
 
     const tiles = document.querySelectorAll('.tile');
     const tileContainer = document.querySelector(".tileContainer");
@@ -37,8 +37,8 @@
         }
     }
 
-    w.addEventListener('resize', onResize);
-    w.addEventListener('load', onResize);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('load', onResize);
 
     leftBtn.addEventListener('click', () => {
         tileContainer.style.left = `0px`;
@@ -52,4 +52,12 @@
         setVisibility("unset");
     });
 
-})(window)
+    return () => {
+        window.removeEventListener('resize', onResize);
+        window.removeEventListener('load', onResize);
+    }
+}
+
+run();
+
+
