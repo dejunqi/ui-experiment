@@ -1,11 +1,17 @@
 .container {
-    width: 1190px;
+    position: relative;
+    margin-top: 50px;
+    width: 90%;
     min-width: 900px;
+    background-color: aquamarine;
+    overflow: hidden;
 }
 
 .tileContainer {
+    position: relative;
     display: flex;
-    width: 100%;
+    /* width: 100%; */
+    min-width: 808px;
 }
 
 .tile {
@@ -16,21 +22,40 @@
 }
 
 .tileImage {
-    width: 100%;
+    width: 177px;
+    height: 177px;
 }
 
 .arrow {
     width: 20px;
-    background-color: aquamarine;
-    visibility: hidden;
+    background-color:bisque;
+    /* visibility: hidden; */
 }
 
-@media (max-width: 970px) {
+.arrowRight {
+    /* position: absolute;
+    top: 50px;
+    right: 20px; */
+    /* visibility: hidden; */
+    color: rebeccapurple;
+}
+
+.arrowLeft {
+    /* position: absolute;
+    top: 50px;
+    left: 0px;; */
+    /* visibility: hidden; */
+    color: rebeccapurple;
+}
+
+/* @media (max-width: 950px) {
     .tile {
-        visibility: hidden;
+        display: none;
     }
 
     .tile:nth-child(-n+4) {
-        visibility: unset !important;
+        display: unset !important;
     }
-}
+} */
+
+
