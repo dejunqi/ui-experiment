@@ -12,18 +12,30 @@
     const rightBtn = document.querySelector(".arrowRight");
     const singleTileWidth = tiles[0].offsetWidth + 25;
     const numOfTiles = tiles.length;
+    let numOfOverFlow = 0;
 
-    console.log(singleTileWidth, numOfTiles)
-
-
-    function getWidth(ele, extra) {
-        return ele.offsetWidth + extra;
+    function getWidth(selector, extra = 0) {
+        return document.querySelector(selector).offsetWidth + extra;
     }
 
     function onResize() {
-        console.log('tileContainer width: ', document.querySelector('.tileContainer').offsetWidth);
-        console.log('tile width: ', document.querySelector('.tile').offsetWidth + 25);
-        if ()
+
+        const tileContainerWidth = getWidth('.tileContainer');
+        const tileWidth = getWidth('.tile', 25);
+        const overFlow = tileContainerWidth / tileWidth;
+        // console.log(overFlow)
+
+        if (overFlow <= 4.5) {
+            numOfOverFlow = numOfTiles - Math.floor(overFlow);
+            console.log('num of overflow: ', numOfOverFlow);
+            for (let i = 4; i < tiles.length; i++) {
+                tiles[i].style.visibility = "hidden"
+            }
+        } else {
+            for (let i = 4; i < tiles.length; i++) {
+                tiles[i].style.visibility = "unset"
+            }
+        }
     }
 
     const observer = new ResizeObserver(onResize)
