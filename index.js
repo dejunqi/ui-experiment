@@ -1,6 +1,7 @@
 
 
-const run = (w) => {
+
+const run = () => {
 
     const tiles = document.querySelectorAll('.tile');
     const tileContainer = document.querySelector(".tileContainer");
@@ -37,8 +38,29 @@ const run = (w) => {
         }
     }
 
-    window.addEventListener('resize', onResize);
-    window.addEventListener('load', onResize);
+    const observe = (selector, attribute, callback) => {
+        let prevW = getWidth('.tileContainer');
+
+        let interval = setInterval(() => {
+            const w = getWidth('.tileContainer');
+            if (w != prevW) {
+                console.log('resized');
+                if (callback && {}.toString.call(callback) === '[object Function]') {
+                    callback();
+                }
+                prevW = w;
+            }
+        }, 100);
+        // return () => clearInterval(interval);
+    }
+
+    observe('.tileContainer', 'offsetWidth', onResize);
+
+
+
+
+    // window.addEventListener('resize', onResize);
+    // window.addEventListener('load', onResize);
 
     leftBtn.addEventListener('click', () => {
         tileContainer.style.left = `0px`;
@@ -52,10 +74,10 @@ const run = (w) => {
         setVisibility("unset");
     });
 
-    return () => {
-        window.removeEventListener('resize', onResize);
-        window.removeEventListener('load', onResize);
-    }
+    // return () => {
+    //     window.removeEventListener('resize', onResize);
+    //     window.removeEventListener('load', onResize);
+    // }
 }
 
 run();
