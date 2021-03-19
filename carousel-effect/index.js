@@ -3,83 +3,121 @@
 
 const run = () => {
 
-    const tiles = document.querySelectorAll('.tile');
-    const tileContainer = document.querySelector(".tileContainer");
-    const leftBtn = document.querySelector(".arrowLeft");
-    const rightBtn = document.querySelector(".arrowRight");
+    const tiles = document.querySelectorAll(`.tile`);
+    const carouselViewPort = document.querySelector(`.carouselViewPort`);
+    const tileContainer = document.querySelector(`.tileContainer`);
+    const leftBtn = document.querySelector(`.btnLeft`);
+    const rightBtn = document.querySelector(`.btnRight`);
+
+
+    if (!tiles || tiles.length <= 4 || !tileContainer || !carouselViewPort) {
+        return;
+    }
     const numOfTiles = tiles.length;
-    let numOfOverFlow = 0;
+    const tileMargin = 24;
+    const baseTileWidth = 177;
 
-    function getWidth(selector, extra = 0) {
-        return document.querySelector(selector).offsetWidth + extra;
-    }
+    let axesLen = numOfTiles * (baseTileWidth + tileMargin);
 
-    const tileWidth = getWidth('.tile', 25);
+    let leftDiff = 0;
 
-    function setVisibility(value) {
-        for (let i = tiles.length - 1; i >= tiles.length - numOfOverFlow ; i--) {
-            tiles[i].style.visibility = value;
-        }
-    }
+    const getWidth = (element, extraVal = 0) => {
+        return element.offsetWidth + extraVal;
+    };
 
-    function onResize() {
-        const tileContainerWidth = getWidth('.tileContainer');
-        const overFlow = tileContainerWidth / tileWidth;
-        if (overFlow <= 4.7) {
-            numOfOverFlow = numOfTiles - Math.floor(overFlow);
-            setVisibility('hidden');
+    const elementEdgeInfo = (element) => {
+        const { left, right } = element.getBoundingClientRect();
+        return { left, right };
+    };
 
-        } else {
-            setVisibility("unset");
-            if (!!tileContainer.style.left && parseInt(tileContainer.style.left) < 0) {
-                tileContainer.style.left = "0px";
+    const updateStyle = (element, attr, value) => {
+        let isNewStyle = true;
+        let currentstyles = element.getAttribute('style')?.split(";") || [];
+        for (let i = 0; i < currentstyles.length; i++) {
+            if (currentstyles[i].includes(attr)) {
+                currentstyles[i] = `${attr}: ${value}`;
+                isNewStyle = false;
+                break;
             }
-            numOfOverFlow = 0;
         }
+        if (isNewStyle) {
+            currentstyles.push(`${attr}: ${value}`);
+        }
+        const newstyle = currentstyles.join(";");
+        console.log(newstyle)
+        element.setAttribute('style', newstyle);
     }
 
-    const observe = (selector, attribute, callback) => {
-        let prevW = getWidth('.tileContainer');
+    const computePosIdx = () => {
+        const carouselViewPortEdge = elementEdgeInfo(carouselViewPort);
+        const tileContainerEdge = elementEdgeInfo(tileContainer);
+        let l = -1, r = numOfTiles;
+        const diffRight = carouselViewPortEdge.right - axesLen;
+        const diffLeft = carouselViewPortEdge.left - tileContainerEdge.left;
 
-        let interval = setInterval(() => {
-            const w = getWidth('.tileContainer');
-            if (w != prevW) {
-                console.log('resized');
-                if (callback && {}.toString.call(callback) === '[object Function]') {
-                    callback();
-                }
-                prevW = w;
+        if (diffRight < 0) {
+            const dr = Math.abs(diffRight)
+            const divide = Math.floor( dr / baseTileWidth);
+            const mod = dr % baseTileWidth;
+            r -= divide;
+            if (mod > 30) {
+                r -= 1;
             }
-        }, 100);
-        // return () => clearInterval(interval);
+        }
+
+        if (diffLeft > 0) {
+            const divide = Math.floor(diffLeft / getWidth(tiles[0], tileMargin));
+            l = divide
+        }
+
+        return { leftIdx: l, rightIdx: r};
+    };
+
+    const updateBtnDisplay = () => {
+
+    };
+
+    const resizeCarousel = () => {
+        console.log('resize')
+        const { leftIdx, rightIdx } = computePosIdx();
+        if (leftIdx > 0) return;
+        const num = rightIdx;
+        const viewPortWidth = getWidth(carouselViewPort);
+        const w = (viewPortWidth / num)
+        const len = numOfTiles * w - (tileMargin / 2);
+        updateStyle(tileContainer, 'width', `${len}px`);
     }
-
-    observe('.tileContainer', 'offsetWidth', onResize);
-
-
-
-
-    // window.addEventListener('resize', onResize);
-    // window.addEventListener('load', onResize);
 
     leftBtn.addEventListener('click', () => {
-        tileContainer.style.left = `0px`;
-        setVisibility("hidden");
+        console.log('left btn clicked')
+        const { leftIdx } = computePosIdx();
+        console.log(leftIdx);
+        updateStyle(tileContainer, 'transform', "translateX(0)");
     });
 
     rightBtn.addEventListener('click', () => {
-        var dis = numOfOverFlow * tileWidth;
-        tileContainer.style.left = `-${dis}px`;
-        tileContainer.style.right = "auto";
-        setVisibility("unset");
+        const { leftIdx, rightIdx } = computePosIdx()
+        if (rightIdx === numOfTiles) return;
+        const overflowRight = numOfTiles - rightIdx;
+        const overflowLeft = leftIdx  + 1;
+        const singleTileWidth = getWidth(tiles[0], tileMargin);
+        const dist = (overflowRight + overflowLeft) * singleTileWidth;
+        updateStyle(tileContainer, 'transform', `translateX(-${dist}px)`);
     });
 
-    // return () => {
-    //     window.removeEventListener('resize', onResize);
-    //     window.removeEventListener('load', onResize);
-    // }
+    const update = () => {
+        resizeCarousel();
+    }
+
+    update();
+    window.addEventListener('resize', () => {
+        update();
+    })
+
 }
 
+
+
+
+
 run();
-
-
