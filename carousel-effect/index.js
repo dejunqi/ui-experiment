@@ -77,21 +77,33 @@ const run = () => {
         return { leftIdx: l, rightIdx: r };
     };
 
-    const updateShiftProperty = (isLeftshifted, isRightshifted) => {
+    const updateShiftProperty = ({ isLeftshifted, isRightshifted }) => {
+        const { leftIdx, rightIdx } = computePosIdx();
+        if (typeof isRightshifted === 'undefined') {
+            isRightshifted = rightIdx < TILE_NUMBER;
+        }
+        if (typeof isLeftshifted === 'undefined') {
+            isLeftshifted = leftIdx >= 0;
+        }
         sbcCardContainer.setAttribute('left-shift', isLeftshifted);
-        sbcCardContainer.setAttribute('right-shift', isRightshifted)
+        sbcCardContainer.setAttribute('right-shift', isRightshifted);
     }
 
-    const updateBtnDisplay = () => {
-        // TODO: use debounce to handle btn update
-        const { leftIdx, rightIdx } = computePosIdx();
-        const overflowRight = TILE_NUMBER - rightIdx;
-        const overflowLeft = leftIdx + 1;
-        const leftVal = overflowLeft > 0 ? 'visible' : 'hidden';
-        const rightVal = overflowRight > 0 ? 'visible' : 'hidden';
-        updateStyle(leftBtn, 'visibility', leftVal);
-        updateStyle(rightBtn, 'visibility', rightVal);
-    };
+    // const updateBtnDisplay = () => {
+    //     // TODO: use debounce to handle btn update
+    //     const { leftIdx, rightIdx } = computePosIdx();
+    //     const overflowRight = TILE_NUMBER - rightIdx;
+    //     const overflowLeft = leftIdx + 1;
+    //     const leftVal = overflowLeft > 0 ? 'visible' : 'hidden';
+    //     const rightVal = overflowRight > 0 ? 'visible' : 'hidden';
+    //     // updateStyle(leftBtn, 'visibility', leftVal);
+    //     // updateStyle(rightBtn, 'visibility', rightVal);
+    //     const args = {
+    //         isLeftshifted: overflowLeft > 0,
+    //         isRightshifted: overflowRight > 0
+    //     }
+    //     updateShiftProperty(args)
+    // };
 
     const resizeCarousel = () => {
         const { leftIdx, rightIdx } = computePosIdx();
@@ -108,15 +120,12 @@ const run = () => {
         }
         const isLeftshifted = leftIdx >= 0;
         const isRightshifted = rightIdx < TILE_NUMBER;
+        // updateShiftProperty({ isLeftshifted, isRightshifted });
     };
 
     leftBtn.addEventListener('click', () => {
         updateStyle(tileContainer, 'transform', 'translateX(0)');
-
-        setTimeout(() => {
-            updateBtnDisplay();
-            resizeCarousel();
-        }, ANIMATION_DELAY);
+        updateShiftProperty({isLeftshifted: false });
     });
 
     rightBtn.addEventListener('click', () => {
@@ -127,12 +136,22 @@ const run = () => {
         const singleTileWidth = getWidth(tiles[0], TILE_MARGIN);
         const dist = (overflowRight + overflowLeft) * singleTileWidth;
         updateStyle(tileContainer, 'transform', `translateX(-${dist}px)`);
-        setTimeout(() => updateBtnDisplay(), ANIMATION_DELAY);
+        updateShiftProperty({isLeftshifted: true, isRightshifted: false});
     });
+
+    carouselViewPort.addEventListener('mouseover', () => {
+        updateShiftProperty({});
+    });
+
+    carouselViewPort.addEventListener('mouseout', () => {
+        updateShiftProperty({isLeftshifted: false, isRightshifted: false})
+    })
+
+
 
     const update = () => {
         resizeCarousel();
-        updateBtnDisplay();
+        // updateBtnDisplay();
     };
 
     update();

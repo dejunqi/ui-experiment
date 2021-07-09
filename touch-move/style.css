@@ -1,0 +1,43 @@
+.image {
+    margin-bottom: 1em;
+    height: 10%;
+  }
+
+  .indicators {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .indicators span {
+    background-color: cornflowerblue;
+    border-radius: 0.5em;
+    display: block;
+    height: 0.5em;
+    margin: 0.5em 0.25em;
+    width: 0.5em;
+  }
+
+  .indicators[data-current="1"] span:nth-child(1),
+  .indicators[data-current="2"] span:nth-child(2),
+  .indicators[data-current="3"] span:nth-child(3) {
+    background: salmon;
+  }
+
+  .sheet {
+    background: cornsilk;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    padding: 1em 0;
+    position: relative;
+    scroll-snap-type: x mandatory;
+    width: 100%;
+  }
+
+  .page {
+    flex-basis: 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
